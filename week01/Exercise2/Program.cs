@@ -34,27 +34,19 @@ class Program
             letter = "F";
         }
 
-        // Determine + or - sign
+        // Determine + or - sign (only if not A or F)
         int lastDigit = grade % 10;
 
-        if (lastDigit >= 7)
+        if (letter != "A" && letter != "F")
         {
-            sign = "+";
-        }
-        else if (lastDigit < 3)
-        {
-            sign = "-";
-        }
-
-        // Handle special cases
-        if (letter == "A" && sign == "+")
-        {
-            sign = "";
-        }
-
-        if (letter == "F")
-        {
-            sign = "";
+            if (lastDigit >= 7)
+            {
+                sign = "+";
+            }
+            else if (lastDigit < 3)
+            {
+                sign = "-";
+            }
         }
 
         // Display grade

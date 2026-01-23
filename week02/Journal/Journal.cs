@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -14,7 +15,7 @@ public class Journal
     {
         if (_entries.Count == 0)
         {
-            Console.WriteLine("The journal is empty.\n");
+            Console.WriteLine("📭 The journal is empty.\n");
             return;
         }
 
@@ -22,6 +23,20 @@ public class Journal
         {
             entry.Display();
         }
+    }
+
+    public void DisplayStats()
+    {
+        int totalWords = 0;
+
+        foreach (Entry entry in _entries)
+        {
+            totalWords += entry.GetWordCount();
+        }
+
+        Console.WriteLine("📘 Journal Statistics");
+        Console.WriteLine($"Entries: {_entries.Count}");
+        Console.WriteLine($"Total Words Written: {totalWords}\n");
     }
 
     public void SaveToFile(string filename)
@@ -39,11 +54,16 @@ public class Journal
     {
         _entries.Clear();
 
+        if (!File.Exists(filename))
+        {
+            Console.WriteLine("❌ File not found.\n");
+            return;
+        }
+
         string[] lines = File.ReadAllLines(filename);
         foreach (string line in lines)
         {
-            Entry entry = Entry.FromFileString(line);
-            _entries.Add(entry);
+            _entries.Add(Entry.FromFileString(line));
         }
     }
 }

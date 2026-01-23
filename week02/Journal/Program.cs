@@ -1,29 +1,25 @@
 using System;
 
-/*
-EXCEEDS REQUIREMENTS:
-- Uses a PromptGenerator class to randomly select prompts
-- Uses clear abstraction with Entry and Journal classes
-- Uses a custom delimiter for safe file storage
-*/
-
 class Program
 {
     static void Main()
     {
         Journal journal = new Journal();
         PromptGenerator promptGenerator = new PromptGenerator();
-
         bool running = true;
 
         while (running)
         {
-            Console.WriteLine("Journal Menu:");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n🌟 Journal Menu 🌟");
+            Console.ResetColor();
+
             Console.WriteLine("1. Write a new entry");
             Console.WriteLine("2. Display the journal");
-            Console.WriteLine("3. Save the journal to a file");
-            Console.WriteLine("4. Load the journal from a file");
-            Console.WriteLine("5. Quit");
+            Console.WriteLine("3. Save the journal");
+            Console.WriteLine("4. Load the journal");
+            Console.WriteLine("5. View journal statistics");
+            Console.WriteLine("6. Quit");
             Console.Write("Choose an option: ");
 
             string choice = Console.ReadLine();
@@ -33,13 +29,16 @@ class Program
             {
                 case "1":
                     string prompt = promptGenerator.GetRandomPrompt();
-                    Console.WriteLine(prompt);
+                    Console.WriteLine($"❓ {prompt}");
                     Console.Write("> ");
                     string response = Console.ReadLine();
 
+                    Console.Write("How are you feeling today? ");
+                    string mood = Console.ReadLine();
+
                     string date = DateTime.Now.ToShortDateString();
-                    Entry entry = new Entry(date, prompt, response);
-                    journal.AddEntry(entry);
+                    journal.AddEntry(new Entry(date, prompt, response, mood));
+                    Console.WriteLine("✅ Entry added!\n");
                     break;
 
                 case "2":
@@ -48,24 +47,27 @@ class Program
 
                 case "3":
                     Console.Write("Enter filename to save: ");
-                    string saveFile = Console.ReadLine();
-                    journal.SaveToFile(saveFile);
-                    Console.WriteLine("Journal saved.\n");
+                    journal.SaveToFile(Console.ReadLine());
+                    Console.WriteLine("💾 Journal saved.\n");
                     break;
 
                 case "4":
                     Console.Write("Enter filename to load: ");
-                    string loadFile = Console.ReadLine();
-                    journal.LoadFromFile(loadFile);
-                    Console.WriteLine("Journal loaded.\n");
+                    journal.LoadFromFile(Console.ReadLine());
+                    Console.WriteLine("📂 Journal loaded.\n");
                     break;
 
                 case "5":
+                    journal.DisplayStats();
+                    break;
+
+                case "6":
                     running = false;
+                    Console.WriteLine("👋 Goodbye!");
                     break;
 
                 default:
-                    Console.WriteLine("Invalid choice. Please try again.\n");
+                    Console.WriteLine("❌ Invalid choice. Try again.\n");
                     break;
             }
         }

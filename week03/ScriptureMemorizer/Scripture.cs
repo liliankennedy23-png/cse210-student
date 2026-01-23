@@ -1,42 +1,63 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class Scripture
 {
     private Reference _reference;
     private List<Word> _words;
+    private Random _random = new Random();
 
     public Scripture(Reference reference, string text)
     {
         _reference = reference;
-        _words = text.Split(' ')
-                     .Select(word => new Word(word))
-                     .ToList();
-    }
+        _words = new List<Word>();
 
-    public void HideRandomWords(int count)
-    {
-        Random random = new Random();
-
-        var visibleWords = _words.Where(w => !w.IsHidden()).ToList();
-
-        for (int i = 0; i < count && visibleWords.Count > 0; i++)
+        foreach (string word in text.Split(" "))
         {
-            int index = random.Next(visibleWords.Count);
-            visibleWords[index].Hide();
-            visibleWords.RemoveAt(index);
+            _words.Add(new Word(word));
         }
     }
 
-    public bool AllWordsHidden()
+    public void HideRandomWords(int numberToHide)
     {
-        return _words.All(w => w.IsHidden());
+        for (int i = 0; i < numberToHide; i++)
+        {
+            int index = _random.Next(_words.Count);
+            _words[index].Hide();
+        }
+    }
+
+    public void RevealOneWord()
+    {
+        foreach (Word word in _words)
+        {
+            if (word.IsHidden())
+            {
+                word.Reveal();
+                break;
+            }
+        }
+    }
+
+    public bool IsCompletelyHidden()
+    {
+        foreach (Word word in _words)
+        {
+            if (!word.IsHidden())
+                return false;
+        }
+        return true;
     }
 
     public string GetDisplayText()
     {
-        string text = string.Join(" ", _words.Select(w => w.GetDisplayText()));
-        return $"{_reference.GetDisplayText()}\n{text}";
+        string display = _reference.GetDisplayText() + "\n\n";
+
+        foreach (Word word in _words)
+        {
+            display += word.GetDisplayText() + " ";
+        }
+
+        return display;
     }
 }

@@ -3,14 +3,9 @@ using System.Collections.Generic;
 
 class Program
 {
-    /*
-     * EXCEEDING REQUIREMENTS:
-     * - Program selects a scripture at random from a small library
-     * - Only hides words that are not already hidden
-     */
-
     static void Main(string[] args)
     {
+        // Creativity: Scripture library instead of a single scripture
         List<Scripture> scriptures = new List<Scripture>
         {
             new Scripture(
@@ -26,22 +21,35 @@ class Program
         Random random = new Random();
         Scripture scripture = scriptures[random.Next(scriptures.Count)];
 
+        int round = 1;
+
         while (true)
         {
             Console.Clear();
             Console.WriteLine(scripture.GetDisplayText());
-            Console.WriteLine("\nPress Enter to continue or type 'quit' to exit.");
+            Console.WriteLine();
+            Console.Write("Press Enter to continue, type 'hint' for help, or type 'quit' to exit: ");
 
-            string input = Console.ReadLine();
-            if (input.ToLower() == "quit")
+            string input = Console.ReadLine().ToLower();
+
+            if (input == "quit")
                 break;
 
-            scripture.HideRandomWords(3);
+            if (input == "hint")
+            {
+                scripture.RevealOneWord();
+                continue;
+            }
 
-            if (scripture.AllWordsHidden())
+            // Creativity: Increasing difficulty
+            scripture.HideRandomWords(round);
+            round++;
+
+            if (scripture.IsCompletelyHidden())
             {
                 Console.Clear();
                 Console.WriteLine(scripture.GetDisplayText());
+                Console.WriteLine("\nAll words are hidden. Program ended.");
                 break;
             }
         }

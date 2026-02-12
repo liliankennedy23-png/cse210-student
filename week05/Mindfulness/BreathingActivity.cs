@@ -4,13 +4,14 @@ class BreathingActivity : Activity
 {
     public BreathingActivity()
     {
-        Name = "Breathing Activity (Focus Reset)";
-        Description = "Reset your focus with deep breathing, then plan your next 3 tasks.";
+        Name = "Breathing Activity";
+        Description = "This activity will help you relax by guiding your breathing in and out slowly. Afterwards, you will set 3 focused tasks.";
     }
 
     protected override void PerformActivity()
     {
         int elapsed = 0;
+
         while (elapsed < Duration)
         {
             Console.Write("\nBreathe in... ");
@@ -22,17 +23,13 @@ class BreathingActivity : Activity
             elapsed += 4;
         }
 
-        // Productivity Prompt
-        Console.WriteLine("\nTake a moment to jot down your top 3 tasks for the next hour:");
+        Console.WriteLine("\nNow, write your top 3 tasks to focus on next:");
+
         for (int i = 1; i <= 3; i++)
         {
-            Console.Write($"> Task {i}: ");
+            Console.Write($"Task {i}: ");
             string task = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(task))
-                Takeaways.Add(task);
+            AddTakeaway(task);
         }
-
-        Console.WriteLine("\nGreat! Now you’re ready to tackle your tasks with focus.");
-        PauseWithSpinner(3);
     }
 }

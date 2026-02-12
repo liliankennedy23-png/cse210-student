@@ -16,41 +16,42 @@ class ReflectionActivity : Activity
         "Why was this experience meaningful to you?",
         "How did you feel when it was complete?",
         "What did you learn about yourself?",
-        "How can you use this experience in the future?"
+        "How can you apply this lesson today?"
     };
 
     public ReflectionActivity()
     {
-        Name = "Reflection Activity (Actionable Insights)";
-        Description = "Reflect on moments of strength and turn insights into actions.";
+        Name = "Reflection Activity";
+        Description = "This activity will help you reflect on times when you have shown strength and resilience.";
     }
 
     protected override void PerformActivity()
     {
-        Random rand = new();
-        string prompt = _prompts[rand.Next(_prompts.Count)];
+        Random random = new();
+        string prompt = _prompts[random.Next(_prompts.Count)];
+
         Console.WriteLine($"\n{prompt}");
         PauseWithSpinner(3);
 
-        DateTime end = DateTime.Now.AddSeconds(Duration);
-        var unusedQuestions = new List<string>(_questions);
+        DateTime endTime = DateTime.Now.AddSeconds(Duration);
+        List<string> unusedQuestions = new(_questions);
 
-        while (DateTime.Now < end)
+        while (DateTime.Now < endTime)
         {
             if (unusedQuestions.Count == 0)
+            {
                 unusedQuestions = new List<string>(_questions);
+            }
 
-            string question = unusedQuestions[rand.Next(unusedQuestions.Count)];
-            unusedQuestions.Remove(question);
+            int index = random.Next(unusedQuestions.Count);
+            string question = unusedQuestions[index];
+            unusedQuestions.RemoveAt(index);
 
             Console.WriteLine($"\n{question}");
             Console.Write("Your reflection: ");
-            string answer = Console.ReadLine();
+            string response = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(answer))
-            {
-                Takeaways.Add(answer + " (Apply today)");
-            }
+            AddTakeaway(response);
 
             PauseWithSpinner(2);
         }

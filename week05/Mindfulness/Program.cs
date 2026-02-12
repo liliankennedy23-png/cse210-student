@@ -5,43 +5,58 @@ class Program
 {
     static void Main()
     {
-        Dictionary<string, int> activityLog = new();
+        // EXCEEDS CORE REQUIREMENTS:
+        //
+        // 1. Added productivity enhancements:
+        //    - Breathing Activity includes top 3 task planning.
+        //    - Reflection Activity converts reflections into actionable insights.
+        //    - Listing Activity includes gratitude + task prioritization.
+        //
+        // 2. Session takeaway tracking that summarizes insights
+        //    and tasks at the end of each activity.
+        //
+        // 3. Prevents duplicate reflection questions until all are used.
+        //
+        // 4. Improved spinner animation using backspace for smooth effect.
 
-        while (true)
+        bool running = true;
+
+        while (running)
         {
             Console.Clear();
             Console.WriteLine("=== Mindfulness & Productivity Program ===\n");
-            Console.WriteLine("1. Breathing Activity (Focus Reset)");
-            Console.WriteLine("2. Reflection Activity (Actionable Insights)");
-            Console.WriteLine("3. Listing Activity (Gratitude + Task Planning)");
+            Console.WriteLine("1. Breathing Activity");
+            Console.WriteLine("2. Reflection Activity");
+            Console.WriteLine("3. Listing Activity");
             Console.WriteLine("4. Quit");
-            Console.Write("\nSelect an option: ");
+            Console.Write("\nSelect a choice from the menu: ");
 
             string choice = Console.ReadLine();
 
-            Activity activity = choice switch
+            Activity activity = null;
+
+            switch (choice)
             {
-                "1" => new BreathingActivity(),
-                "2" => new ReflectionActivity(),
-                "3" => new ListingActivity(),
-                "4" => null,
-                _ => null
-            };
+                case "1":
+                    activity = new BreathingActivity();
+                    break;
+                case "2":
+                    activity = new ReflectionActivity();
+                    break;
+                case "3":
+                    activity = new ListingActivity();
+                    break;
+                case "4":
+                    running = false;
+                    break;
+            }
 
-            if (choice == "4")
-                break;
-
-            if (activity == null)
-                continue;
-
-            activity.Run();
-
-            if (!activityLog.ContainsKey(activity.Name))
-                activityLog[activity.Name] = 0;
-
-            activityLog[activity.Name]++;
+            if (activity != null)
+            {
+                activity.Run();
+            }
         }
 
-        Console.WriteLine("\nThanks for using the Mindfulness & Productivity Program!");
+        Console.WriteLine("\nThank you for using the program!");
     }
 }

@@ -1,13 +1,28 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 abstract class Activity
 {
     private int _duration;
-    protected List<string> Takeaways = new(); // For session summary
+    private List<string> _takeaways = new();
 
-    public string Name { get; protected set; }
-    public string Description { get; protected set; }
+    private string _name;
+    private string _description;
+
+    public string Name
+    {
+        get { return _name; }
+        protected set { _name = value; }
+    }
+
+    public string Description
+    {
+        get { return _description; }
+        protected set { _description = value; }
+    }
+
+    protected int Duration => _duration;
 
     public void Run()
     {
@@ -18,51 +33,61 @@ abstract class Activity
 
     protected abstract void PerformActivity();
 
-    protected int Duration => _duration;
-
-    protected void StartMessage()
+    private void StartMessage()
     {
         Console.Clear();
         Console.WriteLine($"{Name}\n");
         Console.WriteLine(Description);
+
         Console.Write("\nEnter duration in seconds: ");
         while (!int.TryParse(Console.ReadLine(), out _duration) || _duration <= 0)
         {
-            Console.Write("Please enter a valid number: ");
+            Console.Write("Please enter a valid positive number: ");
         }
 
         Console.WriteLine("\nPrepare to begin...");
         PauseWithSpinner(3);
     }
 
-    protected void EndMessage()
+    private void EndMessage()
     {
         Console.WriteLine("\nWell done!");
         PauseWithSpinner(2);
-        Console.WriteLine($"You completed the {Name} for {_duration} seconds.");
-        PauseWithSpinner(1);
 
-        if (Takeaways.Count > 0)
+        Console.WriteLine($"You have completed the {Name} for {_duration} seconds.");
+
+        if (_takeaways.Count > 0)
         {
             Console.WriteLine("\nSession Takeaways:");
-            foreach (var item in Takeaways)
+            foreach (string item in _takeaways)
+            {
                 Console.WriteLine($"- {item}");
+            }
         }
 
         PauseWithSpinner(3);
     }
 
+    protected void AddTakeaway(string item)
+    {
+        if (!string.IsNullOrWhiteSpace(item))
+        {
+            _takeaways.Add(item.Trim());
+        }
+    }
+
     protected void PauseWithSpinner(int seconds)
     {
-        DateTime end = DateTime.Now.AddSeconds(seconds);
+        DateTime endTime = DateTime.Now.AddSeconds(seconds);
         string[] spinner = { "|", "/", "-", "\\" };
-        int i = 0;
+        int index = 0;
 
-        while (DateTime.Now < end)
+        while (DateTime.Now < endTime)
         {
-            Console.Write(spinner[i++ % spinner.Length]);
+            Console.Write(spinner[index]);
             Thread.Sleep(250);
             Console.Write("\b");
+            index = (index + 1) % spinner.Length;
         }
     }
 
